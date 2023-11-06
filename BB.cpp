@@ -46,6 +46,7 @@ void copyToFinal(vector<int> curr_path)
     for (int i=0; i<final_path.size(); i++)
         cout<<final_path[i]<<" ";
     cout<<endl;
+    cout<<final_res<<endl;
 }
 
 // Function to find the minimum edge cost
