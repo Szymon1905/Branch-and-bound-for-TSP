@@ -1,0 +1,3 @@
+C:/Users/Dom/CLionProjects/PEA_1_BF_BB/cmake-build-debug/CMakeFiles/PEA_1_BF_BB.dir
+C:/Users/Dom/CLionProjects/PEA_1_BF_BB/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Dom/CLionProjects/PEA_1_BF_BB/cmake-build-debug/CMakeFiles/rebuild_cache.dir
