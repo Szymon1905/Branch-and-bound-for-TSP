@@ -73,7 +73,7 @@ void brute_force(){
     cout << endl;
 
 
-    vector<vector<int> > macierz = wczytaj_macierz(to_string(liczba_miast) + "_test.txt", liczba_miast);
+    vector<vector<int> > macierz = wczytaj_macierz("tsp_"+ to_string(liczba_miast) + ".txt", liczba_miast);
 
     for (int i = 1; i < liczba_miast; i++)   // wstawiam miasta do vectora, bez miasta startowego
         tablica_miast.push_back(i);          // gdyż miasto startowe zostaje na sowim miejscu

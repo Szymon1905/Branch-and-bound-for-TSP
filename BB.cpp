@@ -30,7 +30,7 @@ void wyzeruj_zmienne() {
 
 }
 
-
+int counter = 0;
 
 
 // Function to copy temporary solution to
@@ -40,6 +40,12 @@ void copyToFinal(vector<int> curr_path)
     for (int i=0; i<curr_path.size()-1; i++)
         final_path[i] = curr_path[i];
     final_path[liczba_miast] = curr_path[0];
+
+    counter++;
+    cout<<"new "<<counter<<endl;
+    for (int i=0; i<final_path.size(); i++)
+        cout<<final_path[i]<<" ";
+    cout<<endl;
 }
 
 // Function to find the minimum edge cost
