@@ -11,18 +11,20 @@ int liczba_miast;
 // Stores the final minimum weight of shortest tour.
 int final_res = INT_MAX;
 
-// final_path[] stores the final solution ie, the
-// path of the salesman.
+// vector najlepsza_sciezka przechowuje najlepsze rozwiązanie
+// w danym momencie.
 vector<int> final_path;
 
-// visited[] keeps track of the already visited nodes
-// in a particular path
+// odwiedzone przechowuje odwiedzone misata w danym momencie przechodzenia drogi
 vector<bool> visited;
 
+
+// wczytuje liczbe miast z maina
 void wczytaj_liczbe_miast_BB(int wczytana) {
     liczba_miast = wczytana;
 }
 
+// zeruje zmienne globalne
 void wyzeruj_zmienne() {
     final_path.clear();
     visited.clear();
@@ -41,12 +43,15 @@ void copyToFinal(vector<int> curr_path)
         final_path[i] = curr_path[i];
     final_path[liczba_miast] = curr_path[0];
 
+    /*
+    // wypisanie nowego najlepszego rozwiązania
     counter++;
-    cout<<"new "<<counter<<endl;
-    for (int i=0; i<final_path.size(); i++)
-        cout<<final_path[i]<<" ";
+    cout<<"nowa naj: "<<counter<<endl;
+    for (int i : final_path)
+        cout<<i<<" ";
     cout<<endl;
     cout<<final_res<<endl;
+    */
 }
 
 // Function to find the minimum edge cost
@@ -123,8 +128,7 @@ void TSPRec(vector<vector<int>> &macierz, int curr_bound, int curr_weight,
         // Consider next vertex if it is not same (diagonal
         // entry in adjacency matrix and not visited
         // already)
-        if (macierz[curr_path[level-1]][i] != 0 &&
-            visited[i] == false)
+        if (macierz[curr_path[level-1]][i] != 0 && visited[i] == false)
         {
             int temp = curr_bound;
             curr_weight += macierz[curr_path[level-1]][i];
@@ -132,11 +136,9 @@ void TSPRec(vector<vector<int>> &macierz, int curr_bound, int curr_weight,
             // different computation of curr_bound for
             // level 2 from the other levels
             if (level==1)
-                curr_bound -= ((firstMin(macierz, curr_path[level-1]) +
-                                firstMin(macierz, i))/2);
+                curr_bound -= ((firstMin(macierz, curr_path[level-1]) + firstMin(macierz, i))/2);
             else
-                curr_bound -= ((secondMin(macierz, curr_path[level-1]) +
-                                firstMin(macierz, i))/2);
+                curr_bound -= ((secondMin(macierz, curr_path[level-1]) + firstMin(macierz, i))/2);
 
             // curr_bound + curr_weight is the actual lower bound
             // for the node that we have arrived on
@@ -188,8 +190,7 @@ void TSP(vector<vector<int>> &macierz)
 
     // Compute initial bound
     for (int i=0; i<liczba_miast; i++)
-        curr_bound += (firstMin(macierz, i) +
-                       secondMin(macierz, i));
+        curr_bound += (firstMin(macierz, i) + secondMin(macierz, i));
 
     // Rounding off the lower bound to an integer
     curr_bound = (curr_bound&1)? curr_bound/2 + 1 :
@@ -223,6 +224,6 @@ int pobierz_dlugosc_sciezki(){
     return final_res;
 }
 
-
+// todo jako pierwsze rozwiązanie dodać 0123456...
 
 

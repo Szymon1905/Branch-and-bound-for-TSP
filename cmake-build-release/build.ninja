@@ -51,13 +51,13 @@ build cmake_object_order_depends_target_PEA_1_BF_BB: phony || CMakeFiles/PEA_1_B
 
 build CMakeFiles/PEA_1_BF_BB.dir/main.cpp.obj: CXX_COMPILER__PEA_1_BF_BB_Release C$:/Users/Dom/CLionProjects/PEA_1_BF_BB/main.cpp || cmake_object_order_depends_target_PEA_1_BF_BB
   DEP_FILE = CMakeFiles\PEA_1_BF_BB.dir\main.cpp.obj.d
-  FLAGS = -O3 -DNDEBUG -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -O3 -march=native -O3 -DNDEBUG -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles\PEA_1_BF_BB.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_1_BF_BB.dir
 
 build CMakeFiles/PEA_1_BF_BB.dir/BB.cpp.obj: CXX_COMPILER__PEA_1_BF_BB_Release C$:/Users/Dom/CLionProjects/PEA_1_BF_BB/BB.cpp || cmake_object_order_depends_target_PEA_1_BF_BB
   DEP_FILE = CMakeFiles\PEA_1_BF_BB.dir\BB.cpp.obj.d
-  FLAGS = -O3 -DNDEBUG -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -O3 -march=native -O3 -DNDEBUG -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles\PEA_1_BF_BB.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_1_BF_BB.dir
 
@@ -70,7 +70,7 @@ build CMakeFiles/PEA_1_BF_BB.dir/BB.cpp.obj: CXX_COMPILER__PEA_1_BF_BB_Release C
 # Link the executable PEA_1_BF_BB.exe
 
 build PEA_1_BF_BB.exe: CXX_EXECUTABLE_LINKER__PEA_1_BF_BB_Release CMakeFiles/PEA_1_BF_BB.dir/main.cpp.obj CMakeFiles/PEA_1_BF_BB.dir/BB.cpp.obj
-  FLAGS = -O3 -DNDEBUG
+  FLAGS = -O3 -march=native -O3 -DNDEBUG
   LINK_FLAGS = -static
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\PEA_1_BF_BB.dir
