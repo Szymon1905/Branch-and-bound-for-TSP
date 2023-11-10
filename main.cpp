@@ -151,7 +151,6 @@ int main() {
     cout << "0 - Wyjście" << endl;
     cout << "1 - Brute force" << endl;
     cout << "2 - Branch and Bound" << endl;
-    cout << "3 - test BB" << endl;
     cin>>opcja;
 
     while(true){

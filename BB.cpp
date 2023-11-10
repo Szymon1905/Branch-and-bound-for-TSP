@@ -9,14 +9,14 @@ using namespace std;
 int liczba_miast;
 
 // Stores the final minimum weight of shortest tour.
-int final_res = INT_MAX;
+int najlepsza_dlugosc = INT_MAX;
 
 // vector najlepsza_sciezka przechowuje najlepsze rozwiązanie
 // w danym momencie.
-vector<int> final_path;
+vector<int> najlepsza_sciezka;
 
 // odwiedzone przechowuje odwiedzone misata w danym momencie przechodzenia drogi
-vector<bool> visited;
+vector<bool> odwiedzone;
 
 
 // wczytuje liczbe miast z maina
@@ -26,37 +26,37 @@ void wczytaj_liczbe_miast_BB(int wczytana) {
 
 // zeruje zmienne globalne
 void wyzeruj_zmienne() {
-    final_path.clear();
-    visited.clear();
-    final_res = INT_MAX;
+    najlepsza_sciezka.clear();
+    odwiedzone.clear();
+    najlepsza_dlugosc = INT_MAX;
 
 }
 
-int counter = 0;
+int licznik = 0;
 
 
 // Function to copy temporary solution to
 // the final solution
 void copyToFinal(vector<int> curr_path)
 {
-    for (int i=0; i<curr_path.size()-1; i++)
-        final_path[i] = curr_path[i];
-    final_path[liczba_miast] = curr_path[0];
+    for (int i=0; i<curr_path.size()-1; i++){
+        najlepsza_sciezka[i] = curr_path[i];
+    }
+    najlepsza_sciezka[liczba_miast] = curr_path[0];
 
     /*
     // wypisanie nowego najlepszego rozwiązania
-    counter++;
+    licznik++;
     cout<<"nowa naj: "<<counter<<endl;
-    for (int i : final_path)
+    for (int i : najlepsza_sciezka)
         cout<<i<<" ";
     cout<<endl;
-    cout<<final_res<<endl;
+    cout<<najlepsza_dlugosc<<endl;
     */
 }
 
-// Function to find the minimum edge cost
-// having an end at the vertex i
-int firstMin(vector<vector<int>> &macierz, int i)
+// funkcja znajdująca pierwsze (najmniejsze) minimum dla danego miasta i
+int min_pierwsze(vector<vector<int>> &macierz, int i)
 {
     int min = INT_MAX;
     for (int k=0; k<liczba_miast; k++)
@@ -65,163 +65,130 @@ int firstMin(vector<vector<int>> &macierz, int i)
     return min;
 }
 
-// function to find the second minimum edge cost
-// having an end at the vertex i
-int secondMin(vector<vector<int>> &macierz, int i)
-{
-    int first = INT_MAX, second = INT_MAX;
-    for (int j=0; j<liczba_miast; j++)
-    {
-        if (i == j)
-            continue;
 
-        if (macierz[i][j] <= first)
-        {
-            second = first;
+int min_drugie(vector<vector<int>> &macierz, int i){  // funkcja znajdująca drugie (drugie najmniejsze) minimum dla danego miasta i
+
+    int first = INT_MAX;
+    int drugie = INT_MAX;
+    for (int j=0; j<liczba_miast; j++){
+        if (i == j){
+            continue;
+        }
+
+        if (macierz[i][j] <= first){
+            drugie = first;
             first = macierz[i][j];
         }
-        else if (macierz[i][j] <= second &&
-                macierz[i][j] != first)
-            second = macierz[i][j];
+
+        else if (macierz[i][j] <= drugie and macierz[i][j] != first){
+            drugie = macierz[i][j];
+        }
+
     }
-    return second;
+    return drugie;
 }
 
-// function that takes as arguments:
-// curr_bound -> lower bound of the root node
-// curr_weight-> stores the weight of the path so far
-// level-> current level while moving in the search
-//		 space tree
-// curr_path[] -> where the solution is being stored which
-//			 would later be copied to final_path[]
-void TSPRec(vector<vector<int>> &macierz, int curr_bound, int curr_weight,
-            int level, vector<int> curr_path)
-{
-    // base case is when we have reached level N which
-    // means we have covered all the nodes once
-    if (level==liczba_miast)
-    {
+
+void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek, int level, vector<int> obecna_sciezka){
+
+
+    if (level==liczba_miast){ // jeżeli dotarłem do końcca o obliczam końcową scieżkę i sprawdzam czy lepsza od dotychczasowego najlepszego rozwiązania
         // check if there is an edge from last vertex in
         // path back to the first vertex
-        if (macierz[curr_path[level-1]][curr_path[0]] != 0)
-        {
-            // curr_res has the total weight of the
-            // solution we got
-            int curr_res = curr_weight +
-                    macierz[curr_path[level-1]][curr_path[0]];
+        // todo check this
+        if (macierz[obecna_sciezka[level - 1]][obecna_sciezka[0]] != 0){
 
-            // Update final result and final path if
-            // current result is better.
-            if (curr_res < final_res)
-            {
-                copyToFinal(curr_path);
-                final_res = curr_res;
+            int obecna_dlugosc = dlugosc_sciezek + macierz[obecna_sciezka[level - 1]][obecna_sciezka[0]]; // obliczam całkowitą długość ścieżki
+
+            if (obecna_dlugosc < najlepsza_dlugosc){ // aktualizuje najlepszą ścieżkę jeśli długość nowej jest mniejsza
+                copyToFinal(obecna_sciezka);
+                najlepsza_dlugosc = obecna_dlugosc;
             }
         }
         return;
     }
 
-    // for any other level iterate for all vertices to
-    // build the search space tree recursively
-    for (int i=0; i<liczba_miast; i++)
-    {
-        // Consider next vertex if it is not same (diagonal
-        // entry in adjacency matrix and not visited
-        // already)
-        if (macierz[curr_path[level-1]][i] != 0 && visited[i] == false)
-        {
-            int temp = curr_bound;
-            curr_weight += macierz[curr_path[level-1]][i];
+    // na kolejnych poziomach drzewa przeszukuje dalej po kolei rekurencyjnie
+    for (int i=0; i<liczba_miast; i++){
+        // przeszukuje kolejne wierzchołki (tylko te co nie są odwiedzone)
+        if (macierz[obecna_sciezka[level - 1]][i] != 0 && !odwiedzone[i]){
+            int tymczasowe_ograniczenie = ograniczenie;
+            dlugosc_sciezek += macierz[obecna_sciezka[level - 1]][i];
 
-            // different computation of curr_bound for
-            // level 2 from the other levels
-            if (level==1)
-                curr_bound -= ((firstMin(macierz, curr_path[level-1]) + firstMin(macierz, i))/2);
-            else
-                curr_bound -= ((secondMin(macierz, curr_path[level-1]) + firstMin(macierz, i))/2);
-
-            // curr_bound + curr_weight is the actual lower bound
-            // for the node that we have arrived on
-            // If current lower bound < final_res, we need to explore
-            // the node further
-            if (curr_bound + curr_weight < final_res)
-            {
-                curr_path[level] = i;
-                visited[i] = true;
-
-                // call TSPRec for the next level
-                TSPRec(macierz, curr_bound, curr_weight, level+1,
-                       curr_path);
+            // jeżeli poziom 1 drzewa to obliczam ograniczenie z dwóch pierwszych minimów miasta startowego i następnego miasta
+            if (level==1){
+                ograniczenie -= ((min_pierwsze(macierz, obecna_sciezka[level - 1]) + min_pierwsze(macierz, i)) / 2);
+            }
+            else{  // jeżeli poziom 2 drzewa to obliczam ograniczenie z pierwszego minimum miasta następnego i drugie minimum miasta obecnego
+                ograniczenie -= ((min_drugie(macierz, obecna_sciezka[level - 1]) + min_pierwsze(macierz, i)) / 2);
             }
 
-            // Else we have to prune the node by resetting
-            // all changes to curr_weight and curr_bound
-            curr_weight -= macierz[curr_path[level-1]][i];
-            curr_bound = temp;
+            int dolne_ograniczenie = ograniczenie + dlugosc_sciezek;  // suma obecnej długość ścieżki (niepełnej) oraz ograniczenie to jest faktyczne dolne ograniczenie dla danego miasta w drzewie
 
-            // Also reset the visited array
-            for (int l = 0; l < visited.size(); l++) {
-                visited[l] = false;
+            if (dolne_ograniczenie < najlepsza_dlugosc){   // sprawdzam czy dolne ograniczenie nie przekracza dotychczasowego najlepszego rozwiązania
+
+                obecna_sciezka[level] = i;
+                odwiedzone[i] = true;
+
+                // rekurencyjnie przeszukuje kolejny poziom drzewa permutacji miast
+                Szukaj(macierz, ograniczenie, dlugosc_sciezek, level + 1, obecna_sciezka);
             }
 
-            for (int j=0; j<=level-1; j++)
-                visited[curr_path[j]] = true;
+            dlugosc_sciezek -= macierz[obecna_sciezka[level - 1]][i]; // jeżeli przekracza to cofam się w drzewie aby odciąć gałąź drzewa bo się nie opłaci jej badać
+            ograniczenie = tymczasowe_ograniczenie;
+
+
+            for (int l = 0; l < odwiedzone.size(); l++) {  // resetuje wektor przechwujący odwiedzone miasta
+                odwiedzone[l] = false;
+            }
+
+
+            for (int j=0; j<=level-1; j++){  // ustawiam odwiedzone miasta ponownie po resecie
+                odwiedzone[obecna_sciezka[j]] = true;
+            }
+
         }
     }
 }
 
-void TSP(vector<vector<int>> &macierz)
-{
-    vector<int> curr_path(liczba_miast+1, -1);
-    // Calculate initial lower bound for the root node
-    // using the formula 1/2 * (sum of first min +
-    // second min) for all edges.
-    // Also initialize the curr_path and visited array
-    int curr_bound = 0;
+void Branch_and_Bound_start(vector<vector<int>> &macierz){
+    int ograniczenie = 0;
+
+    vector<int> obecna_sciezka(liczba_miast + 1, -1); // przygotowuje wektor na sciezke (-1 znaczy brak)
 
 
-    for (int l = 0; l < curr_path.size()-1; l++) {
-        visited.push_back(false);
+    for (int l = 0; l < obecna_sciezka.size() - 1; l++) {  //wstawiam false do sciezki bo nic nie jest jescze odwiedzone
+        odwiedzone.push_back(false);
     }
 
 
-    // final path to fit to the path at the end with back path
-    final_path.resize(liczba_miast+1);
+    najlepsza_sciezka.resize(liczba_miast + 1); // dostosowuje rozmiar wektora do liczby miast (+1 bo jeszcze sciezka powrotna do startu)
 
-    // Compute initial bound
+    // obliczam startowe (na mieście startowym 0 ) ograniczenie ( (pierwsze minimum + drugie minmum) dzielone przez 2) z każdego miasta
     for (int i=0; i<liczba_miast; i++)
-        curr_bound += (firstMin(macierz, i) + secondMin(macierz, i));
+        ograniczenie += (min_pierwsze(macierz, i) + min_drugie(macierz, i));
 
-    // Rounding off the lower bound to an integer
-    curr_bound = (curr_bound&1)? curr_bound/2 + 1 :
-                 curr_bound/2;
 
-    // We start at vertex 1 so the first vertex
-    // in curr_path[] is 0
-    visited[0] = true;
-    curr_path[0] = 0;
+    if (ograniczenie % 2 == 1) {  // poprawiam ograniczenie by dzielło się przez 2
+        ograniczenie = (ograniczenie / 2) + 1;
+    } else {
+        ograniczenie = ograniczenie / 2;
+    }
 
-    // Call to TSPRec for curr_weight equal to
-    // 0 and level 1
-    TSPRec(macierz, curr_bound, 0, 1, curr_path);
+    odwiedzone[0] = true;   // miasto startowe jest odwiedzone na samym początku więc ustawiam na true
+    obecna_sciezka[0] = 0;
+
+    // szukam ścieżek
+    Szukaj(macierz, ograniczenie, 0, 1, obecna_sciezka);
 }
 
-void Branch_and_Bound_start( vector<vector<int>> &macierz ){
-    TSP(macierz);
-
-    printf("Minimum cost : %d\n", final_res);
-    printf("Path Taken : ");
-    for (int i=0; i<=liczba_miast; i++)
-        printf("%d ", final_path[i]);
-    cout<<endl;
-}
 
 vector<int> pobierz_sciezke(){
-    return final_path;
+    return najlepsza_sciezka;
 }
 
 int pobierz_dlugosc_sciezki(){
-    return final_res;
+    return najlepsza_dlugosc;
 }
 
 // todo jako pierwsze rozwiązanie dodać 0123456...
