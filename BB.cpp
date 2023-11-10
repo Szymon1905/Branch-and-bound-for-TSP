@@ -29,8 +29,17 @@ void wyzeruj_zmienne() {
     najlepsza_sciezka.clear();
     odwiedzone.clear();
     najlepsza_dlugosc = INT_MAX;
-
 }
+
+
+vector<int> pobierz_sciezke(){
+    return najlepsza_sciezka;
+}
+
+int pobierz_dlugosc_sciezki(){
+    return najlepsza_dlugosc;
+}
+
 
 int licznik = 0;
 
@@ -173,14 +182,6 @@ void Branch_and_Bound_start(vector<vector<int>> &macierz){
     Szukaj(macierz, ograniczenie, 0, 1, obecna_sciezka);
 }
 
-
-vector<int> pobierz_sciezke(){
-    return najlepsza_sciezka;
-}
-
-int pobierz_dlugosc_sciezki(){
-    return najlepsza_dlugosc;
-}
 
 // todo jako pierwsze rozwiązanie dodać 0123456...
 
