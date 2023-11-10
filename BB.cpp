@@ -71,35 +71,30 @@ int min_drugie(vector<vector<int>> &macierz, int i){  // funkcja znajdująca dru
 }
 
 
-void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek, int level, vector<int> obecna_sciezka){
+void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek, int warstwa_drzewa, vector<int> obecna_sciezka){
 
 
-    if (level==liczba_miast){ // jeżeli dotarłem do końcca o obliczam końcową scieżkę i sprawdzam czy lepsza od dotychczasowego najlepszego rozwiązania
-        // check if there is an edge from last vertex in
-        // path back to the first vertex
-        // todo check this
-        if (macierz[obecna_sciezka[level - 1]][obecna_sciezka[0]] != 0){
+    if (warstwa_drzewa == liczba_miast){ // jeżeli dotarłem do końcca o obliczam końcową scieżkę i sprawdzam czy lepsza od dotychczasowego najlepszego rozwiązania
 
-            int obecna_dlugosc = dlugosc_sciezek + macierz[obecna_sciezka[level - 1]][obecna_sciezka[0]]; // obliczam całkowitą długość ścieżki
+        int obecna_dlugosc = dlugosc_sciezek + macierz[obecna_sciezka[warstwa_drzewa - 1]][obecna_sciezka[0]]; // obliczam całkowitą długość ścieżki
 
-            if (obecna_dlugosc < najlepsza_dlugosc){ // aktualizuje najlepszą ścieżkę jeśli długość nowej jest mniejsza
+        if (obecna_dlugosc < najlepsza_dlugosc){ // aktualizuje najlepszą ścieżkę jeśli długość nowej jest mniejsza
 
-                for (int i=0; i<obecna_sciezka.size()-1; i++){
-                    najlepsza_sciezka[i] = obecna_sciezka[i];
-                }
-                najlepsza_sciezka[liczba_miast] = obecna_sciezka[0];
-                najlepsza_dlugosc = obecna_dlugosc;
-
-                /*
-                // wypisanie nowego najlepszego rozwiązania
-                licznik++;
-                cout<<"nowa naj: "<<counter<<endl;
-                for (int i : najlepsza_sciezka)
-                    cout<<i<<" ";
-                cout<<endl;
-                cout<<najlepsza_dlugosc<<endl;
-                */
+            for (int i=0; i<obecna_sciezka.size()-1; i++){
+                najlepsza_sciezka[i] = obecna_sciezka[i];
             }
+            najlepsza_sciezka[liczba_miast] = obecna_sciezka[0];
+            najlepsza_dlugosc = obecna_dlugosc;
+
+            /*
+            // wypisanie nowego najlepszego rozwiązania
+            licznik++;
+            cout<<"nowa naj: "<<counter<<endl;
+            for (int i : najlepsza_sciezka)
+                cout<<i<<" ";
+            cout<<endl;
+            cout<<najlepsza_dlugosc<<endl;
+            */
         }
         return;
     }
@@ -107,30 +102,30 @@ void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek,
     // na kolejnych poziomach drzewa przeszukuje dalej po kolei rekurencyjnie
     for (int i=0; i<liczba_miast; i++){
         // przeszukuje kolejne wierzchołki (tylko te co nie są odwiedzone)
-        if (macierz[obecna_sciezka[level - 1]][i] != 0 && !odwiedzone[i]){
+        if (macierz[obecna_sciezka[warstwa_drzewa - 1]][i] != 0 && !odwiedzone[i]){
             int tymczasowe_ograniczenie = ograniczenie;
-            dlugosc_sciezek += macierz[obecna_sciezka[level - 1]][i];
+            dlugosc_sciezek += macierz[obecna_sciezka[warstwa_drzewa - 1]][i];
 
             // jeżeli poziom 1 drzewa to obliczam ograniczenie z dwóch pierwszych minimów miasta startowego i następnego miasta
-            if (level==1){
-                ograniczenie -= ((min_pierwsze(macierz, obecna_sciezka[level - 1]) + min_pierwsze(macierz, i)) / 2);
+            if (warstwa_drzewa == 1){
+                ograniczenie -= ((min_pierwsze(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)) / 2);
             }
             else{  // jeżeli poziom 2 drzewa to obliczam ograniczenie z pierwszego minimum miasta następnego i drugie minimum miasta obecnego
-                ograniczenie -= ((min_drugie(macierz, obecna_sciezka[level - 1]) + min_pierwsze(macierz, i)) / 2);
+                ograniczenie -= ((min_drugie(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)) / 2);
             }
 
             int dolne_ograniczenie = ograniczenie + dlugosc_sciezek;  // suma obecnej długość ścieżki (niepełnej) oraz ograniczenie to jest faktyczne dolne ograniczenie dla danego miasta w drzewie
 
             if (dolne_ograniczenie < najlepsza_dlugosc){   // sprawdzam czy dolne ograniczenie nie przekracza dotychczasowego najlepszego rozwiązania
 
-                obecna_sciezka[level] = i;
+                obecna_sciezka[warstwa_drzewa] = i;
                 odwiedzone[i] = true;
 
                 // rekurencyjnie przeszukuje kolejny poziom drzewa permutacji miast
-                Szukaj(macierz, ograniczenie, dlugosc_sciezek, level + 1, obecna_sciezka);
+                Szukaj(macierz, ograniczenie, dlugosc_sciezek, warstwa_drzewa + 1, obecna_sciezka);
             }
 
-            dlugosc_sciezek -= macierz[obecna_sciezka[level - 1]][i]; // jeżeli przekracza to cofam się w drzewie aby odciąć gałąź drzewa bo się nie opłaci jej badać
+            dlugosc_sciezek -= macierz[obecna_sciezka[warstwa_drzewa - 1]][i]; // jeżeli przekracza to cofam się w drzewie aby odciąć gałąź drzewa bo się nie opłaci jej badać
             ograniczenie = tymczasowe_ograniczenie;
 
 
@@ -139,7 +134,7 @@ void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek,
             }
 
 
-            for (int j=0; j<=level-1; j++){  // ustawiam odwiedzone miasta ponownie po resecie
+            for (int j=0; j <= warstwa_drzewa - 1; j++){  // ustawiam odwiedzone miasta ponownie po resecie
                 odwiedzone[obecna_sciezka[j]] = true;
             }
 
