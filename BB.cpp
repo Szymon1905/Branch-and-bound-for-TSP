@@ -35,25 +35,7 @@ void wyzeruj_zmienne() {
 int licznik = 0;
 
 
-// Function to copy temporary solution to
-// the final solution
-void copyToFinal(vector<int> curr_path)
-{
-    for (int i=0; i<curr_path.size()-1; i++){
-        najlepsza_sciezka[i] = curr_path[i];
-    }
-    najlepsza_sciezka[liczba_miast] = curr_path[0];
 
-    /*
-    // wypisanie nowego najlepszego rozwiązania
-    licznik++;
-    cout<<"nowa naj: "<<counter<<endl;
-    for (int i : najlepsza_sciezka)
-        cout<<i<<" ";
-    cout<<endl;
-    cout<<najlepsza_dlugosc<<endl;
-    */
-}
 
 // funkcja znajdująca pierwsze (najmniejsze) minimum dla danego miasta i
 int min_pierwsze(vector<vector<int>> &macierz, int i)
@@ -101,8 +83,22 @@ void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek,
             int obecna_dlugosc = dlugosc_sciezek + macierz[obecna_sciezka[level - 1]][obecna_sciezka[0]]; // obliczam całkowitą długość ścieżki
 
             if (obecna_dlugosc < najlepsza_dlugosc){ // aktualizuje najlepszą ścieżkę jeśli długość nowej jest mniejsza
-                copyToFinal(obecna_sciezka);
+
+                for (int i=0; i<obecna_sciezka.size()-1; i++){
+                    najlepsza_sciezka[i] = obecna_sciezka[i];
+                }
+                najlepsza_sciezka[liczba_miast] = obecna_sciezka[0];
                 najlepsza_dlugosc = obecna_dlugosc;
+
+                /*
+                // wypisanie nowego najlepszego rozwiązania
+                licznik++;
+                cout<<"nowa naj: "<<counter<<endl;
+                for (int i : najlepsza_sciezka)
+                    cout<<i<<" ";
+                cout<<endl;
+                cout<<najlepsza_dlugosc<<endl;
+                */
             }
         }
         return;
