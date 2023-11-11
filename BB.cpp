@@ -59,19 +59,20 @@ int min_pierwsze(vector<vector<int>> &macierz, int i)
 
 int min_drugie(vector<vector<int>> &macierz, int i){  // funkcja znajdująca drugie (drugie najmniejsze) minimum dla danego miasta i
 
-    int first = INT_MAX;
+    int pierwsze = INT_MAX;
     int drugie = INT_MAX;
     for (int j=0; j<liczba_miast; j++){
-        if (i == j){
+
+        if (i == j){ // tych po skosie nie bierzemy pod uwagę bo nie idziemy do samego siebie
             continue;
         }
 
-        if (macierz[i][j] <= first){
-            drugie = first;
-            first = macierz[i][j];
+        if (macierz[i][j] <= pierwsze){ // bierzemuy pierwsze i szukamy drugiego po nim
+            drugie = pierwsze;
+            pierwsze = macierz[i][j];
         }
 
-        else if (macierz[i][j] <= drugie and macierz[i][j] != first){
+        if (macierz[i][j] <= drugie and macierz[i][j] != pierwsze){
             drugie = macierz[i][j];
         }
 
@@ -119,7 +120,7 @@ void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek,
             if (warstwa_drzewa == 1){
                 ograniczenie -= ((min_pierwsze(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)) / 2);
             }
-            else{  // jeżeli poziom 2 drzewa to obliczam ograniczenie z pierwszego minimum miasta następnego i drugie minimum miasta obecnego
+            else{  // jeżeli inny poziom drzewa to obliczam ograniczenie z pierwszego minimum miasta następnego i drugie minimum miasta obecnego
                 ograniczenie -= ((min_drugie(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)) / 2);
             }
 
