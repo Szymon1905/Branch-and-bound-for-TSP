@@ -29,6 +29,10 @@ void permutacja(vector<int>& permutacja, int &sciezka, vector<int>& najkrotsza, 
         if (obliczona < sciezka){   // aktualizacja najkrotszej sciezki
             sciezka = obliczona;
             najkrotsza = permutacja;
+            for(int i : permutacja){
+                cout << i << " ";
+            }
+            cout << endl;
         }
 
         obliczona = 0;    // reset obliczonej nowej sciezki
