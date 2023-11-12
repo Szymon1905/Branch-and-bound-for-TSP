@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
-
+#include <cmath>
 using namespace std;
 
 // zmienne globalne
@@ -116,12 +116,17 @@ void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek,
             int tymczasowe_ograniczenie = ograniczenie;
             dlugosc_sciezek += macierz[obecna_sciezka[warstwa_drzewa - 1]][i];
 
+            double zmiana;
             // jeżeli poziom 1 drzewa to obliczam ograniczenie z dwóch pierwszych minimów miasta startowego i następnego miasta
             if (warstwa_drzewa == 1){
-                ograniczenie -= ((min_pierwsze(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)) / 2);
+                zmiana = ((min_pierwsze(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)));
+                zmiana = zmiana / 2;
+                ograniczenie -= ceil(zmiana);
             }
             else{  // jeżeli inny poziom drzewa to obliczam ograniczenie z pierwszego minimum miasta następnego i drugie minimum miasta obecnego
-                ograniczenie -= ((min_drugie(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)) / 2);
+                zmiana = ((min_drugie(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)));
+                zmiana = zmiana / 2;
+                ograniczenie -= ceil(zmiana);
             }
 
             int dolne_ograniczenie = ograniczenie + dlugosc_sciezek;  // suma obecnej długość ścieżki (niepełnej) oraz ograniczenie to jest faktyczne dolne ograniczenie dla danego miasta w drzewie
