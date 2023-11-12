@@ -7,6 +7,7 @@
 
 using namespace std;
 
+int global_liczba_miast;
 
 void permutacja(vector<int>& permutacja, int &sciezka, vector<int>& najkrotsza, vector<vector<int> > macierz){
     int obliczona = 0;
@@ -29,10 +30,12 @@ void permutacja(vector<int>& permutacja, int &sciezka, vector<int>& najkrotsza, 
         if (obliczona < sciezka){   // aktualizacja najkrotszej sciezki
             sciezka = obliczona;
             najkrotsza = permutacja;
+            /*
             for(int i : permutacja){
                 cout << i << " ";
             }
             cout << endl;
+             */
         }
 
         obliczona = 0;    // reset obliczonej nowej sciezki
@@ -68,18 +71,19 @@ vector<vector<int> > wczytaj_macierz(const string& daneWejsciowe, int &liczba_mi
 }
 
 void brute_force(){
-    int dlugosc_sciezki = INT_MAX, liczba_miast = 0;  // dlugosc sciezki na max aby potem szukac najkrotszej
+    int dlugosc_sciezki = INT_MAX;  // dlugosc sciezki na max aby potem szukac najkrotszej
     vector<int> tablica_miast, najkrotsza;              // vector najkrotsza przechowuje najkrotsza droge przez miasta
 
 
-    cout << "[BF] Podaj liczbe miast w zakresie 4-20: ";   // w pliku i tak jest liczba miast,
-    cin >> liczba_miast;             // ale to jest po to aby latwo wybrac ktore chcemy z kilku plikow
+    cout << "[BB] Podaj nazwe pliku do wczytania: ";   // w pliku i tak jest liczba miast,
     cout << endl;
 
+    string nazwa_pliku;
+    cin>>nazwa_pliku;
 
-    vector<vector<int> > macierz = wczytaj_macierz("tsp_"+ to_string(liczba_miast) + ".txt", liczba_miast);
+    vector<vector<int> > macierz = wczytaj_macierz(nazwa_pliku, global_liczba_miast);
 
-    for (int i = 1; i < liczba_miast; i++)   // wstawiam miasta do vectora, bez miasta startowego
+    for (int i = 1; i < global_liczba_miast; i++)   // wstawiam miasta do vectora, bez miasta startowego
         tablica_miast.push_back(i);          // gdyż miasto startowe zostaje na sowim miejscu
     // i nie bierze udziału w generowaniu permutacji,
 
@@ -106,22 +110,24 @@ void brute_force(){
 }
 
 void Branch_and_Bound(){
-    int dlugosc_sciezki = INT_MAX, liczba_miast = 0;  // dlugosc sciezki na max aby potem szukac najkrotszej
+    int dlugosc_sciezki = INT_MAX;  // dlugosc sciezki na max aby potem szukac najkrotszej
     vector<int> tablica_miast, najkrotsza;              // vector najkrotsza przechowuje najkrotsza droge przez miasta
 
 
-    cout << "[BB] Podaj liczbe miast w zakresie 4-20: ";   // w pliku i tak jest liczba miast,
-    cin >> liczba_miast;             // ale to jest po to aby latwo wybrac ktore chcemy z kilku plikow
+    cout << "[BB] Podaj nazwe pliku do wczytania: ";   // w pliku i tak jest liczba miast,
     cout << endl;
 
+    string nazwa_pliku;
+    cin>>nazwa_pliku;
 
-    vector<vector<int> > macierz = wczytaj_macierz("tsp_"+ to_string(liczba_miast) + ".txt", liczba_miast);
+
+    vector<vector<int> > macierz = wczytaj_macierz(nazwa_pliku, global_liczba_miast);
 
 
     auto start = chrono::high_resolution_clock::now(); // start pomiaru czasu
 
     wyzeruj_zmienne();
-    wczytaj_liczbe_miast_BB(liczba_miast);
+    wczytaj_liczbe_miast_BB(global_liczba_miast);
     Branch_and_Bound_start(macierz);    // obliczanie najkrotszej sciezki za pomocą BB
 
     auto koniec = chrono::high_resolution_clock::now(); // koniec pomiaru czasu
