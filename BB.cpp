@@ -67,7 +67,7 @@ int min_drugie(vector<vector<int>> &macierz, int i){  // funkcja znajdująca dru
             continue;
         }
 
-        if (macierz[i][j] <= pierwsze){ // bierzemuy pierwsze i szukamy drugiego po nim
+        if (macierz[i][j] <= pierwsze){ // bierzemy pierwsze i szukamy drugiego po nim
             drugie = pierwsze;
             pierwsze = macierz[i][j];
         }
@@ -121,7 +121,7 @@ void Szukaj(vector<vector<int>> &macierz, int ograniczenie, int dlugosc_sciezek,
             if (warstwa_drzewa == 1){
                 zmiana = ((min_pierwsze(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)));
                 zmiana = zmiana / 2;
-                ograniczenie -= ceil(zmiana);
+                ograniczenie -= ceil(zmiana); // ceil zaokroglanie do najblizszej
             }
             else{  // jeżeli inny poziom drzewa to obliczam ograniczenie z pierwszego minimum miasta następnego i drugie minimum miasta obecnego
                 zmiana = ((min_drugie(macierz, obecna_sciezka[warstwa_drzewa - 1]) + min_pierwsze(macierz, i)));

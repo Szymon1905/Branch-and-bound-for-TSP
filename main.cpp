@@ -123,11 +123,12 @@ void Branch_and_Bound(){
 
     vector<vector<int> > macierz = wczytaj_macierz(nazwa_pliku, global_liczba_miast);
 
+    wyzeruj_zmienne();
+    wczytaj_liczbe_miast_BB(global_liczba_miast);
+
 
     auto start = chrono::high_resolution_clock::now(); // start pomiaru czasu
 
-    wyzeruj_zmienne();
-    wczytaj_liczbe_miast_BB(global_liczba_miast);
     Branch_and_Bound_start(macierz);    // obliczanie najkrotszej sciezki za pomocą BB
 
     auto koniec = chrono::high_resolution_clock::now(); // koniec pomiaru czasu
